@@ -1,6 +1,5 @@
 package jm.db;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,12 +13,10 @@ import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
-
-import com.google.appengine.api.datastore.Query.CompositeFilter;
-import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 
 @PersistenceCapable
 public class Device {
@@ -117,21 +114,11 @@ public class Device {
 		 return KeyFactory.keyToString(id);		
 	}	
 	
-	public static List<Device> findBy(PersistenceManager pm, Key vendor, String type) {
-		Filter vendorFilter = new FilterPredicate("vendor", FilterOperator.EQUAL, vendor);		
-		
-		Filter typeFilter = new FilterPredicate("type", FilterOperator.EQUAL, type);
-		
-		Filter filter = CompositeFilterOperator.and(vendorFilter, typeFilter);		
-		
+	public static List<Device> findBy(PersistenceManager pm, Key vendor, String type) {	
 		Query q = pm.newQuery(Device.class);
 		q.setFilter("vendor == vendorParam && type == typeParam");
-		//q.setFilter("");
 		q.declareParameters(Vendor.class.getSimpleName() + " vendorParam, String typeParam");
-		//q.declareParameters("");
 		List<Device> result = (List<Device>) q.execute(vendor, type);
-		//System.out.println("Count: "+ result.size());
-		//return null;
 		return new ArrayList<Device>(result);
 	}	
 	

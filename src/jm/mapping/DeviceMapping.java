@@ -1,4 +1,6 @@
-package jm.db;
+package jm.mapping;
+
+import jm.db.Device;
 
 public class DeviceMapping {
 	

@@ -11,6 +11,10 @@
 		<param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
 		<param-value>true</param-value>
 	 </init-param>
+	 <init-param>
+  		<param-name>com.sun.jersey.spi.container.ContainerRequestFilters</param-name>
+  		<param-value>jm.AuthFilter</param-value>
+	 </init-param>
      <load-on-startup>1</load-on-startup>
   </servlet>
   <servlet-mapping>
@@ -20,16 +24,6 @@
    <servlet-mapping>
     <servlet-name>Jersey Web Application</servlet-name>
     <url-pattern>/rest/*</url-pattern>
-  </servlet-mapping>
-
-  <servlet>
-    <servlet-name>Upload</servlet-name>
-    <servlet-class>jm.Upload</servlet-class>
-  </servlet>
-
-  <servlet-mapping>
-    <servlet-name>Upload</servlet-name>
-    <url-pattern>/upload</url-pattern>
   </servlet-mapping>
   
   <servlet>

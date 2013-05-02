@@ -1,9 +1,10 @@
-package jm;
+package jm.common;
 
 import java.io.Serializable;
 
 public class FlashMessage implements Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private String type;
 	private String message;
 	

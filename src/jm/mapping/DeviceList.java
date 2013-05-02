@@ -1,7 +1,9 @@
-package jm.db;
+package jm.mapping;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import jm.db.Device;
 
 public class DeviceList {
 

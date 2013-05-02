@@ -91,12 +91,12 @@ body {
 					</ul>
 					<p class="navbar-text pull-right">
 						<c:choose>
-							<c:when test="${it.user != null}">
-        	Jste přihlášen jako ${it.user.nickname}. <a href="${it.url}">Odhlásit
+							<c:when test="${user != null}">
+        	Jste přihlášen jako ${user.nickname}. <a href="${url}">Odhlásit
 									se.</a>
 							</c:when>
 							<c:otherwise>
-        	Nejste přihlášen. <a href="${it.url}">Přihlásit se.</a>
+        	Nejste přihlášen. <a href="${url}">Přihlásit se.</a>
 							</c:otherwise>
 						</c:choose>
 					</p>
@@ -127,7 +127,7 @@ body {
 							<li><a href="/rest/front/about">About</a></li>
 						</ul>
 					</div>
-					<c:if test="${it.admin}">
+					<c:if test="${admin}">
 						<jsp:include page="/views/menu/admin_menu.jsp" />
 					</c:if>
 					<!--/.well -->
@@ -153,8 +153,6 @@ body {
 
 	</div>
 	<!--/.fluid-container-->
-
-	<script src="bootstrap/js/bootstrap.min.js"></script>
 </body>
 </html>
 <jsp:invoke fragment="footer" />
