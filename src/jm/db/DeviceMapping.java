@@ -4,10 +4,12 @@ public class DeviceMapping {
 	
 	private String name;
 	private String id;
+	private String description;
 	
 	public DeviceMapping(Device device) {
 		this.name = device.getName();
 		this.id = device.getKey();
+		this.description = device.getDescription();
 	}
 
 	public String getName() {
@@ -24,6 +26,14 @@ public class DeviceMapping {
 
 	public void setId(String id) {
 		this.id = id;
-	}	
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}			
 	
 }

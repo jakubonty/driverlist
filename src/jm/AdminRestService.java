@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.jdo.PersistenceManager;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -30,16 +32,6 @@ import com.sun.jersey.api.view.Viewable;
 
 @Path("/admin/")
 public class AdminRestService extends AppController {
-	@GET
-	@Path("/test")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response test() {
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("aa", "aaaaaaabuuhuuu");
-
-		beforeRender(map);
-		return Response.ok(new Viewable("/index", map)).build();
-	}
 
 	@GET
 	@Path("/vendor/new")
@@ -54,7 +46,8 @@ public class AdminRestService extends AppController {
 	@POST
 	@Path("/vendor/new")
 	@Produces(MediaType.APPLICATION_XHTML_XML)
-	public Response addVendor(@FormParam("name") String vendorName) throws URISyntaxException {
+	public Response addVendor(@FormParam("name") String vendorName, @Context HttpServletRequest httpRequest) throws URISyntaxException {
+		HttpSession session= httpRequest.getSession(true);
 		Map<String, Object> map = new HashMap<String, Object>();
 
 		PersistenceManager pm = jm.db.PMF.get().getPersistenceManager();
@@ -64,6 +57,9 @@ public class AdminRestService extends AppController {
 		try {
 			if (vendor.getName() != null && !vendor.getName().isEmpty()) {
 				pm.makePersistent(vendor);
+				session.setAttribute("flashMessage", new FlashMessage("Driver was successfully added.", "success"));
+			} else {
+				session.setAttribute("flashMessage", new FlashMessage("Error.", "error"));
 			}
 		} finally {
 			pm.close();
@@ -86,7 +82,8 @@ public class AdminRestService extends AppController {
 	@POST
 	@Path("/operating-system/new")
 	@Produces(MediaType.APPLICATION_XHTML_XML)
-	public Response addOperatingSystem(@FormParam("name") String osName) throws URISyntaxException {
+	public Response addOperatingSystem(@FormParam("name") String osName, @Context HttpServletRequest httpRequest) throws URISyntaxException {
+		HttpSession session= httpRequest.getSession(true);
 		Map<String, Object> map = new HashMap<String, Object>();
 
 		PersistenceManager pm = jm.db.PMF.get().getPersistenceManager();
@@ -96,6 +93,9 @@ public class AdminRestService extends AppController {
 		try {
 			if (os.getName() != null && !os.getName().isEmpty()) {
 				pm.makePersistent(os);
+				session.setAttribute("flashMessage", new FlashMessage("Driver was successfully added.", "success"));
+			} else {
+				session.setAttribute("flashMessage", new FlashMessage("Error.", "error"));
 			}
 		} finally {
 			pm.close();
@@ -123,14 +123,18 @@ public class AdminRestService extends AppController {
 	@Produces(MediaType.APPLICATION_XHTML_XML)
 	public Response addDevice(@FormParam("name") String deviceName,
 													@FormParam("vendorId") String vendorId,
-													@FormParam("type") String type
+													@FormParam("type") String type,
+													@FormParam("description") String description,
+													@Context HttpServletRequest httpRequest
 			) throws URISyntaxException {
+		HttpSession session= httpRequest.getSession(true);
 		Map<String, Object> map = new HashMap<String, Object>();
 
 		PersistenceManager pm = jm.db.PMF.get().getPersistenceManager();
 		
 		Device device = new Device();
 		device.setName(deviceName);
+		device.setDescription(description);
 		device.setType(type);
 		Key key = KeyFactory.stringToKey(vendorId);
 		Vendor vendor = pm.getObjectById(Vendor.class, key);
@@ -139,12 +143,15 @@ public class AdminRestService extends AppController {
 				vendor.addDevice(device);
 				pm.makePersistent(vendor);
 				pm.makePersistent(device);
+				session.setAttribute("flashMessage", new FlashMessage("Driver was successfully added.", "success"));
+			} else {
+				session.setAttribute("flashMessage", new FlashMessage("Error.", "error"));
 			}
 		} finally {
 			pm.close();
 		}
 
 		beforeRender(map);
-		return Response.seeOther(new URI("/test/")).build();
+		return Response.seeOther(new URI("/rest/front/index")).build();
 	}			
 }

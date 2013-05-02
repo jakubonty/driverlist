@@ -47,9 +47,6 @@ public class Driver implements Serializable {
 
 	@Persistent
 	private BlobKey data;
-	
-	@NotPersistent
-	private List<Comment> comments;	
 		
 	public BlobKey getData() {
 		return data;
@@ -138,15 +135,6 @@ public class Driver implements Serializable {
 
 	public void setCreated(Date created) {
 		this.created = created;
-	}
-
-	public List<Comment> getComments() {
-		return comments;
-	}
-
-
-	public void setComments(List<Comment> comments) {
-		this.comments = comments;
 	}
 	
 	public static List<Driver> getAll(PersistenceManager pm) {

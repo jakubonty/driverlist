@@ -10,24 +10,29 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
 <t:page>
-    <jsp:attribute name="header">
-      <h1>Welcome</h1>
-    </jsp:attribute>
-    <jsp:attribute name="footer">
-      <p id="copyright">Copyright 1927, Future Bits When There Be Bits Inc.</p>
-    </jsp:attribute>
     <jsp:body>
-        <form method="POST">
+    	<h2>New device</h2>
+        <form class="form-general" method="POST">
         	Device name:
-            <input type="text" name="name" value="" />
+        	<br/>
+            <input type="text" name="name" value="" placeholder="Device name"/>
+            <br/>
         	Vendor:
+        	<br/>
         	<select name="vendorId">		
             <c:forEach var="item" items="${it.vendors}">
   					<option value="${item.key}">${item.name}</option>           		           		           			         
         	</c:forEach>
         	</select>
+        	<br/>
         	Device type:
+        	<br/>
         	<jsp:include page="/views/shared/types.jsp" />
+        	<br/>
+        	Description:
+        	<br/>
+        	<textarea name="description"></textarea>
+        	<br/>
             <input type="submit" name="submit" value="Odeslat" />
         </form>
     </jsp:body>

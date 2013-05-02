@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.jdo.PersistenceManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -36,19 +37,7 @@ import com.sun.jersey.api.view.Viewable;
 
 @Path("/user/")
 public class UserRestService extends AppController {
-	private com.google.appengine.api.blobstore.BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-	
-	@GET
-	@Path("/testt")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response test() {
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("aa", "aaaaaaabuuhuuu");
-
-		beforeRender(map);
-		return Response.ok(new Viewable("/index", map)).build();
-	}
-	
+	private com.google.appengine.api.blobstore.BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();	
 	@GET
 	@Path("/driver/new")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -69,9 +58,11 @@ public class UserRestService extends AppController {
 	public Response addDriver(@FormParam("name") String driverName,
 													@FormParam("deviceId") String deviceId,
 													@FormParam("osId") String osId,
+													@FormParam("version") String version,
 													@Context HttpServletRequest httpRequest,
 													@Context HttpServletResponse httpResponse
 			) throws URISyntaxException {
+		HttpSession session= httpRequest.getSession(true);
 		Map<String, Object> map = new HashMap<String, Object>();
 
 		PersistenceManager pm = jm.db.PMF.get().getPersistenceManager();
@@ -79,12 +70,14 @@ public class UserRestService extends AppController {
 		driverName = httpRequest.getParameter("name");
 		deviceId = httpRequest.getParameter("deviceId");
 		osId = httpRequest.getParameter("osId");
+		version = httpRequest.getParameter("version");
 		Key key = KeyFactory.stringToKey(deviceId);
 		Device device = pm.getObjectById(Device.class, key);
 		key = KeyFactory.stringToKey(osId);
 		OperatingSystem os = pm.getObjectById(OperatingSystem.class, key);
 		Driver driver = new Driver();
 		driver.setName(driverName);
+		driver.setVersion(version);
 		driver.setOperatingSystem(os.getName());
 		try {
 			if (driver.getName() != null && !driver.getName().isEmpty()) {
@@ -93,13 +86,15 @@ public class UserRestService extends AppController {
 		        driver.setData(blobKey);
 				device.addDriver(driver);						
 				pm.makePersistent(device);
-				pm.makePersistent(driver);				
+				pm.makePersistent(driver);
+				session.setAttribute("flashMessage", new FlashMessage("Driver was successfully added.", "success"));
+			} else {
+				session.setAttribute("flashMessage", new FlashMessage("Error.", "error"));
 			}
 		} finally {
 			pm.close();
 		}
 
-		beforeRender(map);
-		return Response.seeOther(new URI("/test/")).build();
+		return Response.seeOther(new URI("/front/index")).build();
 	}			
 }

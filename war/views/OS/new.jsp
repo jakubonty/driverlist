@@ -10,16 +10,10 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
 <t:page>
-    <jsp:attribute name="header">
-     
-    </jsp:attribute>
-    <jsp:attribute name="footer">
-      
-    </jsp:attribute>
     <jsp:body>
-        <form method="POST">
-        	<input type="text" name="name" />
-            <input type="hidden" name="action" value="addOS">
+    	<h2>Operating system</h2>
+        <form class="form-general" method="POST">
+        	<input type="text" name="name" placeholder="System name" />
             <div><input type="submit" name="submit" value="Odeslat"></div>
         </form>
     </jsp:body>

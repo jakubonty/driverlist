@@ -88,10 +88,10 @@ public class FrontRestService extends AppController {
 	
 	@GET
 	@Path("/driver/{id}")
-	@Produces(MediaType.APPLICATION_XHTML_XML)
-	public void downloadDriver(@PathParam("id") String id, @Context HttpServletResponse httpResponse) throws IOException {
+	public Response downloadDriver(@PathParam("id") String id, @Context HttpServletResponse httpResponse) throws IOException {
 		com.google.appengine.api.blobstore.BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 		BlobKey blobKey = new BlobKey(id);
 		blobstoreService.serve(blobKey, httpResponse);
+		return Response.created(null).status(HttpServletResponse.SC_OK).build();
 	}		
 }

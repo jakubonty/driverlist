@@ -10,37 +10,36 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
 <t:page>
-    <jsp:attribute name="header">
-      <h1>Welcome</h1>
-    </jsp:attribute>
-    <jsp:attribute name="footer">
-      <p id="copyright">Copyright 1927, Future Bits When There Be Bits Inc.</p>
-    </jsp:attribute>
     <jsp:body>
     	<h1>${it.device.name}</h1>
+    	<p>
+    		${it.device.description}
+    	</p>
         Operating system:
         <select name="os" id="os">
         <c:forEach var="item" items="${it.systems}">
   			<option value="${item.name}">${item.name}</option>           		           		           			         
         </c:forEach>
         </select>    	
-    	<div id="drivers">
-
-        </div>
+      	<div class="row-fluid">
+        	<div id="drivers" class="span6">
+    		</div>
+    	</div>
      <script>
         $(document).ready(function() {
         	os = { "drivers": [
                 <c:forEach var="item" items="${it.device.drivers}">
-    				{"name": "${item.name}", "os": "${item.operatingSystem}"},           		           		           			         
+    				{"name": "${item.name}", "os": "${item.operatingSystem}", 
+    				"data": "${item.data.keyString}", "version": "${item.version}"},           		           		           			         
     			</c:forEach>
     				]
         	};
         	var updateDrivers = function() {
         		var selectedOs = $('#os').val();
-				$('#drivers').empty();
+				$('#drivers').empty();				
             	for(dat in os.drivers) {
             		if (os.drivers[dat].os == selectedOs) {
-                		$('#drivers').append('<a href="device/'+os.drivers[dat].name+'">'+os.drivers[dat].name+'</a>');
+                		$('#drivers').append('<h4>'+os.drivers[dat].name+'</h4><p>Version: '+os.drivers[dat].version+'<br/><a href="/rest/front/driver/'+os.drivers[dat].data+'">Download .. </a></p>');
             		}
             	}    		        	
         	};		     		

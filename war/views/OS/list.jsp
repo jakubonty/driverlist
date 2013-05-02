@@ -10,14 +10,8 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 
 <t:page>
-	<jsp:attribute name="header">
-     
-    </jsp:attribute>
-	<jsp:attribute name="footer">
-      
-    </jsp:attribute>
     <jsp:body>
-        <c:forEach var="item" items="${vendors}">
+        <c:forEach var="item" items="${it.vendors}">
            		${item.name} 
            		<a href="/admin/action=deleteVendor?vendorId=${item.id}">Vymazat výrobce</a>           			          	
         </c:forEach>

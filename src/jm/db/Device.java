@@ -29,6 +29,8 @@ public class Device {
 	private Key id;	
 	@Persistent
 	private String name;
+	@Persistent
+	private String description;	
 	
 	@Persistent
 	private Vendor vendor;	
@@ -42,6 +44,14 @@ public class Device {
     @Persistent(mappedBy = "device")
     private List<Driver> drivers;	
 	
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	public Key getId() {
 		return id;
 	}
