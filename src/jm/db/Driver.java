@@ -1,0 +1,167 @@
+package jm.db;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.jdo.PersistenceManager;
+import javax.jdo.Query;
+import javax.jdo.annotations.IdGeneratorStrategy;
+import javax.jdo.annotations.NotPersistent;
+import javax.jdo.annotations.PersistenceCapable;
+import javax.jdo.annotations.Persistent;
+import javax.jdo.annotations.PrimaryKey;
+
+import com.google.appengine.api.blobstore.BlobKey;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.users.User;
+
+@PersistenceCapable
+public class Driver implements Serializable {
+	
+	@PrimaryKey
+	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+	private Key id;
+
+	@Persistent
+	private User author;
+	
+	@Persistent
+	private String name;		
+	
+	@Persistent
+	private Device device;	
+	
+	@Persistent
+	private String version;	
+	
+	@Persistent
+	private String downloadURL;	
+	
+	@Persistent
+	private Date created;
+	
+	@Persistent
+	private String operatingSystem;
+
+	@Persistent
+	private BlobKey data;
+	
+	@NotPersistent
+	private List<Comment> comments;	
+		
+	public BlobKey getData() {
+		return data;
+	}
+
+
+	public void setData(BlobKey data) {
+		this.data = data;
+	}
+
+
+	public Key getId() {
+		return id;
+	}
+
+
+	public String getOperatingSystem() {
+		return operatingSystem;
+	}
+
+
+	public void setOperatingSystem(String operatingSystem) {
+		this.operatingSystem = operatingSystem;
+	}
+
+
+	public void setId(Key id) {
+		this.id = id;
+	}
+
+
+	public User getAuthor() {
+		return author;
+	}
+
+
+	public void setAuthor(User author) {
+		this.author = author;
+	}
+
+
+	public String getName() {
+		return name;
+	}
+
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+
+	public Device getDevice() {
+		return device;
+	}
+
+
+	public void setDevice(Device device) {
+		this.device = device;
+	}
+
+
+	public String getVersion() {
+		return version;
+	}
+
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+
+	public String getDownloadURL() {
+		return downloadURL;
+	}
+
+
+	public void setDownloadURL(String downloadURL) {
+		this.downloadURL = downloadURL;
+	}
+
+
+	public Date getCreated() {
+		return created;
+	}
+
+
+	public void setCreated(Date created) {
+		this.created = created;
+	}
+
+	public List<Comment> getComments() {
+		return comments;
+	}
+
+
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
+	}
+	
+	public static List<Driver> getAll(PersistenceManager pm) {
+		Query query = pm.newQuery(Driver.class);
+		List<Driver> result = (List<Driver>) query.execute();
+		return result;
+	}	
+		/*
+	public void loadReplies(PersistenceManager pm) {
+		Query query = pm.newQuery(Message.class);
+		query.setFilter("parentMessage == parentParam");
+		query.setOrdering("date desc");
+		query.declareParameters(Message.class.getSimpleName() + " parentParam");
+			
+		List<Message> result = (List<Message>) query.execute(key);
+		replies = new ArrayList<Message>(result);
+	}*/
+}
