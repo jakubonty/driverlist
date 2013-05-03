@@ -1,6 +1,7 @@
 package jm.db;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -13,6 +14,7 @@ import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.users.User;
 
 @PersistenceCapable
@@ -135,19 +137,13 @@ public class Driver implements Serializable {
 		this.created = created;
 	}
 	
+	public String getKey() {
+		 return KeyFactory.keyToString(id);		
+	}	
+	
 	public static List<Driver> getAll(PersistenceManager pm) {
 		Query query = pm.newQuery(Driver.class);
 		List<Driver> result = (List<Driver>) query.execute();
 		return result;
 	}	
-		/*
-	public void loadReplies(PersistenceManager pm) {
-		Query query = pm.newQuery(Message.class);
-		query.setFilter("parentMessage == parentParam");
-		query.setOrdering("date desc");
-		query.declareParameters(Message.class.getSimpleName() + " parentParam");
-			
-		List<Message> result = (List<Message>) query.execute(key);
-		replies = new ArrayList<Message>(result);
-	}*/
 }

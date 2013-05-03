@@ -1,10 +1,3 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<!-- The HTML 4.01 Transitional DOCTYPE declaration-->
-<!-- above set at the top of the file will set     -->
-<!-- the browser's rendering engine into           -->
-<!-- "Quirks Mode". Replacing this declaration     -->
-<!-- with a "Standards Mode" doctype is supported, -->
-<!-- but may lead to some differences in layout.   -->
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
@@ -35,11 +28,11 @@
         	var updateDevices = function() {
         		var vendorId = $('#vendorId').val();
         		var type = $('#type').val();
-        		$.getJSON("/rest/front/search?vendorId="+vendorId+"&type="+type,
+        		$.getJSON("/dl/front/search?vendorId="+vendorId+"&type="+type,
                     function(data) {
     			$('#devices').empty();
                 for(dat in data.devices) {                            	
-                    $('#devices').append('<a href="/rest/front/device/'+data.devices[dat].id+'"><h4>'+data.devices[dat].name+'</h4></a><p>'+data.devices[dat].description+'</p>');
+                    $('#devices').append('<a href="/dl/front/device/'+data.devices[dat].id+'"><h4>'+data.devices[dat].name+'</h4></a><p>'+data.devices[dat].description+'</p>');
                 }                
             	});
         		};

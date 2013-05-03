@@ -1,10 +1,3 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<!-- The HTML 4.01 Transitional DOCTYPE declaration-->
-<!-- above set at the top of the file will set     -->
-<!-- the browser's rendering engine into           -->
-<!-- "Quirks Mode". Replacing this declaration     -->
-<!-- with a "Standards Mode" doctype is supported, -->
-<!-- but may lead to some differences in layout.   -->
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
@@ -39,7 +32,7 @@
 				$('#drivers').empty();				
             	for(dat in os.drivers) {
             		if (os.drivers[dat].os == selectedOs) {
-                		$('#drivers').append('<h4>'+os.drivers[dat].name+'</h4><p>Version: '+os.drivers[dat].version+'<br/><a href="/rest/front/driver/'+os.drivers[dat].data+'">Download .. </a></p>');
+                		$('#drivers').append('<h4>'+os.drivers[dat].name+'</h4><p>Version: '+os.drivers[dat].version+'<br/><a href="/dl/front/driver/'+os.drivers[dat].data+'">Download .. </a></p>');
             		}
             	}    		        	
         	};		     		

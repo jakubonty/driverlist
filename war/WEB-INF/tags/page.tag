@@ -81,13 +81,13 @@ body {
 				<a class="btn btn-navbar" data-toggle="collapse"
 					data-target=".nav-collapse"> <span class="icon-bar"></span> <span
 					class="icon-bar"></span> <span class="icon-bar"></span>
-				</a> <a class="brand" href="/rest/front/index">DriverList</a>
+				</a> <a class="brand" href="/">DriverList</a>
 				<div class="nav-collapse collapse">
 					<ul class="nav">
-						<li><a href="/rest/front/index">Home</a></li>
-						<li><a href="/rest/front/index">Find driver</a></li>
-						<li><a href="/rest/user/driver/new">Add driver</a></li>
-						<li><a href="/rest/front/about">About</a></li>
+						<li><a href="/dl/">Home</a></li>
+						<li><a href="/dl/">Find driver</a></li>
+						<li><a href="/dl/user/drivers/new">Add driver</a></li>
+						<li><a href="/dl/front/about">About</a></li>
 					</ul>
 					<p class="navbar-text pull-right">
 						<c:choose>
@@ -122,9 +122,9 @@ body {
 					<div class="well sidebar-nav">
 						<ul class="nav nav-list">
 							<li class="nav-header">Menu</li>
-							<li><a href="/rest/front/index">Find driver</a></li>
-							<li><a href="/rest/user/driver/new">Add driver</a></li>
-							<li><a href="/rest/front/about">About</a></li>
+							<li><a href="/dl/">Find driver</a></li>
+							<li><a href="/dl/user/drivers/new">Add driver</a></li>
+							<li><a href="/dl/front/about">About</a></li>
 						</ul>
 					</div>
 					<c:if test="${admin}">

@@ -27,7 +27,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.sun.jersey.api.view.Viewable;
 
-@Path("/front/")
+@Path("/")
 public class FrontRestService extends AppController {
 	
 	@GET
@@ -45,9 +45,8 @@ public class FrontRestService extends AppController {
 		return Response.ok().entity(deviceList).build();
 	}
 	
-	@GET
-	@Path("/index")
-	@Produces(MediaType.APPLICATION_XHTML_XML)
+    @GET
+    @Produces(MediaType.TEXT_HTML)
 	public Response addDevice() {
 		Map<String, Object> map = new HashMap<String, Object>();
 

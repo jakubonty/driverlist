@@ -4,19 +4,11 @@
 
 <t:page>
     <jsp:body>
-    	<h2>New device</h2>
+    	<h2>Update device</h2>
         <form class="form-general" method="POST">
         	Device name:
         	<br/>
-            <input type="text" name="name" value="" placeholder="Device name"/>
-            <br/>
-        	Vendor:
-        	<br/>
-        	<select name="vendorId">		
-            <c:forEach var="item" items="${it.vendors}">
-  					<option value="${item.key}">${item.name}</option>           		           		           			         
-        	</c:forEach>
-        	</select>
+            <input type="text" name="name" value="${it.device.name}" placeholder="Device name"/>
         	<br/>
         	Device type:
         	<br/>
@@ -24,7 +16,7 @@
         	<br/>
         	Description:
         	<br/>
-        	<textarea name="description"></textarea>
+        	<textarea name="description">${it.device.description}</textarea>
         	<br/>
             <input type="submit" name="submit" value="Send" />
         </form>

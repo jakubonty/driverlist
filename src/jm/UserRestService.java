@@ -34,7 +34,7 @@ import com.sun.jersey.api.view.Viewable;
 public class UserRestService extends AppController {
 	private com.google.appengine.api.blobstore.BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();	
 	@GET
-	@Path("/driver/new")
+	@Path("/drivers/new")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response newDriver() {
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -48,7 +48,7 @@ public class UserRestService extends AppController {
 	}
 	
 	@POST
-	@Path("/driver/new")
+	@Path("/drivers/new")
 	@Produces(MediaType.APPLICATION_XHTML_XML)
 	public Response addDriver(@FormParam("name") String driverName,
 													@FormParam("deviceId") String deviceId,
@@ -89,6 +89,6 @@ public class UserRestService extends AppController {
 			pm.close();
 		}
 
-		return Response.seeOther(new URI("/front/index")).build();
+		return Response.seeOther(new URI("/")).build();
 	}			
 }

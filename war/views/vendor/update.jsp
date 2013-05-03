@@ -4,9 +4,9 @@
 
 <t:page>
     <jsp:body>
-    	<h2>New vendor</h2>
+    	<h2>Update vendor</h2>
         <form class="form-general" method="POST">
-        	<input type="text" name="name" placeholder="Vendor name" />
+        	<input type="text" name="name" placeholder="Vendor name" value="${it.vendor.name}" />
             <div><input type="submit" name="submit" value="Send"></div>
         </form>
     </jsp:body>
