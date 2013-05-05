@@ -45,6 +45,7 @@
         	<br />
         	<input type="file" name="driver" />        	
         	<br />
+        	<br />
             <input class="btn btn-large btn-primary" type="submit"
 				name="submit" value="Add driver" />
         </form>

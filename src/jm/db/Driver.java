@@ -37,17 +37,18 @@ public class Driver implements Serializable {
 	private String version;	
 	
 	@Persistent
-	private String downloadURL;	
-	
-	@Persistent
 	private Date created;
 	
 	@Persistent
 	private String operatingSystem;
-
+	
 	@Persistent
 	private BlobKey data;
 		
+	public Driver() {
+		created = new Date();		
+	}	
+	
 	public BlobKey getData() {
 		return data;
 	}
@@ -82,7 +83,12 @@ public class Driver implements Serializable {
 		return author;
 	}
 
-
+	public String getAuthorEmail() {
+		if (author == null)
+			return "none";
+		return author.getEmail();
+	}
+	
 	public void setAuthor(User author) {
 		this.author = author;
 	}
@@ -117,17 +123,6 @@ public class Driver implements Serializable {
 		this.version = version;
 	}
 
-
-	public String getDownloadURL() {
-		return downloadURL;
-	}
-
-
-	public void setDownloadURL(String downloadURL) {
-		this.downloadURL = downloadURL;
-	}
-
-
 	public Date getCreated() {
 		return created;
 	}
@@ -143,6 +138,7 @@ public class Driver implements Serializable {
 	
 	public static List<Driver> getAll(PersistenceManager pm) {
 		Query query = pm.newQuery(Driver.class);
+		query.setOrdering("name");
 		List<Driver> result = (List<Driver>) query.execute();
 		return result;
 	}	

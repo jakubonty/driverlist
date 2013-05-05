@@ -1,4 +1,11 @@
-<!-- Indices written at Fri, 3 May 2013 18:57:06 CEST -->
+<!-- Indices written at Sun, 5 May 2013 23:27:37 CEST -->
 
-<datastore-indexes/>
+<datastore-indexes>
 
+    <!-- Used 1 time in query history -->
+    <datastore-index kind="Device" ancestor="true" source="auto">
+        <property name="type" direction="asc"/>
+        <property name="name" direction="asc"/>
+    </datastore-index>
+
+</datastore-indexes>

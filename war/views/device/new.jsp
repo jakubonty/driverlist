@@ -26,7 +26,8 @@
         	<br/>
         	<textarea name="description"></textarea>
         	<br/>
-            <input type="submit" name="submit" value="Send" />
+            <input class="btn btn-large btn-primary" type="submit"
+				name="submit" value="Create" />
         </form>
     </jsp:body>
 </t:page>

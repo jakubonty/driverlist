@@ -3,12 +3,10 @@ package jm;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.jdo.PersistenceManager;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -26,17 +24,16 @@ import jm.db.OperatingSystem;
 import jm.db.Vendor;
 import jm.db.Driver;
 
-import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.KeyFactory.Builder;
 import com.sun.jersey.api.view.Viewable;
 
 @Path("/admin/")
-public class AdminRestService extends AppController {
+public class AdminRestService extends AppController {		
+	
 	@GET
 	@Path("/drivers/")
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_XHTML_XML)
 	public Response listDrivers() {
 		Map<String, Object> map = new HashMap<String, Object>();
 
@@ -47,60 +44,84 @@ public class AdminRestService extends AppController {
 	}
 
 	@GET
+	@Path("/drivers/{id}/delete")
+	@Produces(MediaType.APPLICATION_XHTML_XML)
+	public Response deleteDriver(@PathParam("id") String id,
+			@Context HttpServletRequest httpRequest) {
+		HttpSession session = httpRequest.getSession(true);
+		PersistenceManager pm = jm.db.PMF.get().getPersistenceManager();
+		try {
+			Driver driver = pm.getObjectById(Driver.class,
+					KeyFactory.stringToKey(id));
+			pm.deletePersistent(driver);
+			showFlashMessage("Driver sucessfully deleted.", "success");
+		} catch (Exception e) {
+			session.setAttribute("flashMessage", new FlashMessage("Error.",
+					"error"));
+		}
+		return Response.seeOther(URI.create("/admin/drivers")).build();
+	}
+
+	@GET
 	@Path("/drivers/{id}/update")
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_XHTML_XML)
 	public Response newDriver(@PathParam("id") String id) {
+		HttpSession session = httpRequest.getSession(true);
 		Map<String, Object> map = new HashMap<String, Object>();
 
-		PersistenceManager pm = jm.db.PMF.get().getPersistenceManager();
-		map.put("systems", OperatingSystem.getAll(pm));
-		map.put("devices", Device.getAll(pm));
-		map.put("driver",
+		try {
+			PersistenceManager pm = jm.db.PMF.get().getPersistenceManager();
+			map.put("systems", OperatingSystem.getAll(pm));
+			map.put("devices", Device.getAll(pm));
+			map.put("driver",
 				pm.getObjectById(Driver.class, KeyFactory.stringToKey(id)));
-
-		beforeRender(map);
+		} catch(Exception e) {
+			showFlashMessage("Error.", "error");
+		}
 		return Response.ok(new Viewable("/views/driver/update.jsp", map))
 				.build();
 	}
 
 	@POST
 	@Path("/drivers/{id}/update")
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_XHTML_XML)
 	public Response addDriver(@PathParam("id") String id,
 			@FormParam("name") String driverName,
 			@FormParam("osId") String osId,
 			@FormParam("version") String version,
 			@Context HttpServletRequest httpRequest) throws URISyntaxException {
-		HttpSession session = httpRequest.getSession(true);
 
 		PersistenceManager pm = jm.db.PMF.get().getPersistenceManager();
 
-		Key key = KeyFactory.stringToKey(id);
-		Driver driver = pm.getObjectById(Driver.class, key);
-		key = KeyFactory.stringToKey(osId);
-		OperatingSystem os = pm.getObjectById(OperatingSystem.class, key);
+		Driver driver = null;
+		OperatingSystem os = null;
+		try {
+			Key key = KeyFactory.stringToKey(id);
+			driver = pm.getObjectById(Driver.class, key);
+			key = KeyFactory.stringToKey(osId);
+			os = pm.getObjectById(OperatingSystem.class, key);
+		} catch (Exception e) {
+			showFlashMessage("Error.", "error");
+		}
 		driver.setName(driverName);
 		driver.setVersion(version);
 		driver.setOperatingSystem(os.getName());
 		try {
 			if (driver.getName() != null && !driver.getName().isEmpty()) {
 				pm.makePersistent(driver);
-				session.setAttribute("flashMessage", new FlashMessage(
-						"Driver was successfully updated.", "success"));
+				showFlashMessage("Driver was successfully updated.", "success");
 			} else {
-				session.setAttribute("flashMessage", new FlashMessage("Error.",
-						"error"));
+				showFlashMessage("Error.", "error");
 			}
 		} finally {
 			pm.close();
 		}
-
 		return Response.seeOther(new URI("/admin/drivers")).build();
 	}
 
 	@GET
 	@Path("/vendors/")
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_XHTML_XML)
 	public Response listVendors() {
 		Map<String, Object> map = new HashMap<String, Object>();
 
@@ -111,14 +132,38 @@ public class AdminRestService extends AppController {
 	}
 
 	@GET
+	@Path("/vendors/{id}/delete")
+	@Produces(MediaType.APPLICATION_XHTML_XML)
+	public Response deleteVendor(@PathParam("id") String id,
+			@Context HttpServletRequest httpRequest) {
+		PersistenceManager pm = jm.db.PMF.get().getPersistenceManager();
+		try {
+			Vendor vendor = pm.getObjectById(Vendor.class,
+					KeyFactory.stringToKey(id));
+			pm.deletePersistent(vendor);
+			showFlashMessage("Vendor sucessfully deleted.", "success");
+		} catch (Exception e) {
+			showFlashMessage("Error.", "error");
+		} finally {
+			pm.close();
+		}
+		return Response.seeOther(URI.create("/admin/vendors")).build();
+	}
+
+	@GET
 	@Path("/vendors/{id}/update")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response updateVendor(@PathParam("id") String id) {
+	@Produces(MediaType.APPLICATION_XHTML_XML)
+	public Response updateVendor(@PathParam("id") String id,
+			@Context HttpServletRequest httpRequest) {		
 		Map<String, Object> map = new HashMap<String, Object>();
 
-		PersistenceManager pm = jm.db.PMF.get().getPersistenceManager();
-		map.put("vendor",
-				pm.getObjectById(Vendor.class, KeyFactory.stringToKey(id)));
+		try {
+			PersistenceManager pm = jm.db.PMF.get().getPersistenceManager();
+			map.put("vendor",
+					pm.getObjectById(Vendor.class, KeyFactory.stringToKey(id)));
+		} catch (Exception e) {
+			showFlashMessage("Error.", "error");
+		}
 
 		return Response.ok(new Viewable("/views/vendor/update.jsp", map))
 				.build();
@@ -126,27 +171,33 @@ public class AdminRestService extends AppController {
 
 	@POST
 	@Path("/vendors/{id}/update")
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_XHTML_XML)
 	public Response updateVendorSave(@PathParam("id") String id,
 			@FormParam("name") String vendorName,
 			@Context HttpServletRequest httpRequest) {
-		HttpSession session = httpRequest.getSession(true);
-		Map<String, Object> map = new HashMap<String, Object>();
-
 		PersistenceManager pm = jm.db.PMF.get().getPersistenceManager();
-		Vendor vendor = pm.getObjectById(Vendor.class,
-				KeyFactory.stringToKey(id));
-		vendor.setName(vendorName);
+		Vendor vendor = null;
+		try {
+			vendor = pm.getObjectById(Vendor.class, KeyFactory.stringToKey(id));
+			if (vendorName == null || vendorName.isEmpty()) {
+				showFlashMessage("Vendor name missing.", "error");
+			} else {
+				vendor.setName(vendorName);
+				pm.makePersistent(vendor);
+				showFlashMessage("Vendor sucessfully updated.", "success");
+			}
+		} catch (Exception e) {
+			showFlashMessage("Error.", "error");
+		} finally {
+			pm.close();
+		}
 
-		pm.makePersistent(vendor);
-		session.setAttribute("flashMessage", new FlashMessage(
-				"Vendor sucessfully updated.", "success"));
 		return Response.seeOther(URI.create("/admin/vendors")).build();
 	}
 
 	@GET
 	@Path("/vendors/new")
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_XHTML_XML)
 	public Response newVendor() {
 		Map<String, Object> map = new HashMap<String, Object>();
 
@@ -158,9 +209,6 @@ public class AdminRestService extends AppController {
 	@Produces(MediaType.APPLICATION_XHTML_XML)
 	public Response addVendor(@FormParam("name") String vendorName,
 			@Context HttpServletRequest httpRequest) throws URISyntaxException {
-		HttpSession session = httpRequest.getSession(true);
-		Map<String, Object> map = new HashMap<String, Object>();
-
 		PersistenceManager pm = jm.db.PMF.get().getPersistenceManager();
 
 		Vendor vendor = new Vendor();
@@ -168,22 +216,20 @@ public class AdminRestService extends AppController {
 		try {
 			if (vendor.getName() != null && !vendor.getName().isEmpty()) {
 				pm.makePersistent(vendor);
-				session.setAttribute("flashMessage", new FlashMessage(
-						"Driver was successfully added.", "success"));
+				showFlashMessage("Vendor was successfully added.", "success");
 			} else {
-				session.setAttribute("flashMessage", new FlashMessage("Error.",
-						"error"));
+				showFlashMessage("Error.", "error");
 			}
 		} finally {
 			pm.close();
 		}
 
-		return Response.seeOther(new URI("/")).build();
+		return Response.seeOther(new URI("/admin/vendors/")).build();
 	}
 
 	@GET
 	@Path("/operating-systems/")
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_XHTML_XML)
 	public Response listSystems() {
 		Map<String, Object> map = new HashMap<String, Object>();
 
@@ -195,62 +241,74 @@ public class AdminRestService extends AppController {
 
 	@GET
 	@Path("/operating-systems/{id}/delete")
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_XHTML_XML)
 	public Response deleteOperatingSystem(@PathParam("id") String id,
 			@Context HttpServletRequest httpRequest) {
-		HttpSession session = httpRequest.getSession(true);
 		PersistenceManager pm = jm.db.PMF.get().getPersistenceManager();
 		try {
-			Device device = pm.getObjectById(Device.class,
+			OperatingSystem os = pm.getObjectById(OperatingSystem.class,
 					KeyFactory.stringToKey(id));
-			pm.deletePersistent(device);
-			session.setAttribute("flashMessage", new FlashMessage(
-					"Operating system sucessfully deleted.", "success"));
+			pm.deletePersistent(os);
+			showFlashMessage("Operating system sucessfully deleted.", "success");
 		} catch (Exception e) {
-			session.setAttribute("flashMessage", new FlashMessage("Error.",
-					"error"));
+			showFlashMessage("Error.", "error");
+		} finally {
+			pm.close();
 		}
-		return Response.seeOther(URI.create("/admin/operating-systems")).build();
-	}	
-	
+		return Response.seeOther(URI.create("/admin/operating-systems"))
+				.build();
+	}
+
 	@GET
 	@Path("/operating-systems/{id}/update")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response updateOperatingSystem(@PathParam("id") String id) {
+	@Produces(MediaType.APPLICATION_XHTML_XML)
+	public Response updateOperatingSystem(@PathParam("id") String id,
+			@Context HttpServletRequest httpRequest) {
 		Map<String, Object> map = new HashMap<String, Object>();
 
 		PersistenceManager pm = jm.db.PMF.get().getPersistenceManager();
-		map.put("os",
-				pm.getObjectById(OperatingSystem.class,
-						KeyFactory.stringToKey(id)));
+		try {
+			map.put("os",
+					pm.getObjectById(OperatingSystem.class,
+							KeyFactory.stringToKey(id)));
+		} catch (Exception e) {
+			showFlashMessage("Error.", "error");
+		}
 
 		return Response.ok(new Viewable("/views/OS/update.jsp", map)).build();
 	}
 
 	@POST
 	@Path("/operating-systems/{id}/update")
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_XHTML_XML)
 	public Response updateOperatingSystemSave(@PathParam("id") String id,
 			@FormParam("name") String osName,
 			@Context HttpServletRequest httpRequest) {
-		HttpSession session = httpRequest.getSession(true);
-		Map<String, Object> map = new HashMap<String, Object>();
+		boolean valid = true;
 
 		PersistenceManager pm = jm.db.PMF.get().getPersistenceManager();
-		OperatingSystem os = pm.getObjectById(OperatingSystem.class,
-				KeyFactory.stringToKey(id));
-		os.setName(osName);
 
-		pm.makePersistent(os);
-		session.setAttribute("flashMessage", new FlashMessage(
-				"Operating system sucessfully updated.", "success"));
+		OperatingSystem os = null;
+		try {
+			os = pm.getObjectById(OperatingSystem.class,
+					KeyFactory.stringToKey(id));
+			os.setName(osName);
+		} catch (Exception e) {
+			valid = false;
+		}
+		if (valid) {
+			pm.makePersistent(os);
+			showFlashMessage("Operating system sucessfully updated.", "success");
+		} else {
+			showFlashMessage("Error.", "error");
+		}
 		return Response.seeOther(URI.create("/admin/operating-systems"))
 				.build();
 	}
 
 	@GET
 	@Path("/operating-systems/new")
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_XHTML_XML)
 	public Response newOperatingSystem() {
 		Map<String, Object> map = new HashMap<String, Object>();
 
@@ -262,7 +320,6 @@ public class AdminRestService extends AppController {
 	@Produces(MediaType.APPLICATION_XHTML_XML)
 	public Response addOperatingSystem(@FormParam("name") String osName,
 			@Context HttpServletRequest httpRequest) throws URISyntaxException {
-		HttpSession session = httpRequest.getSession(true);
 		Map<String, Object> map = new HashMap<String, Object>();
 
 		PersistenceManager pm = jm.db.PMF.get().getPersistenceManager();
@@ -272,23 +329,21 @@ public class AdminRestService extends AppController {
 		try {
 			if (os.getName() != null && !os.getName().isEmpty()) {
 				pm.makePersistent(os);
-				session.setAttribute("flashMessage", new FlashMessage(
-						"Driver was successfully added.", "success"));
+				showFlashMessage("Operating system was successfully added.", "success");
 			} else {
-				session.setAttribute("flashMessage", new FlashMessage("Error.",
-						"error"));
+				showFlashMessage("Error.", "error");
 			}
 		} finally {
 			pm.close();
 		}
 
 		beforeRender(map);
-		return Response.seeOther(new URI("/test/")).build();
+		return Response.seeOther(new URI("/admin/operating-systems/")).build();
 	}
 
 	@GET
 	@Path("/devices/")
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_XHTML_XML)
 	public Response listDevices() {
 		Map<String, Object> map = new HashMap<String, Object>();
 
@@ -301,7 +356,7 @@ public class AdminRestService extends AppController {
 
 	@GET
 	@Path("/devices/new")
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_XHTML_XML)
 	public Response newDevice() {
 		Map<String, Object> map = new HashMap<String, Object>();
 
@@ -314,33 +369,35 @@ public class AdminRestService extends AppController {
 
 	@GET
 	@Path("/devices/{id}/delete")
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_XHTML_XML)
 	public Response deleteDevice(@PathParam("id") String id,
 			@Context HttpServletRequest httpRequest) {
-		HttpSession session = httpRequest.getSession(true);
 		PersistenceManager pm = jm.db.PMF.get().getPersistenceManager();
 		try {
 			Device device = pm.getObjectById(Device.class,
 					KeyFactory.stringToKey(id));
 			pm.deletePersistent(device);
-			session.setAttribute("flashMessage", new FlashMessage(
-					"Device sucessfully deleted.", "success"));
+			showFlashMessage("Device sucessfully deleted.", "success");
 		} catch (Exception e) {
-			session.setAttribute("flashMessage", new FlashMessage("Error.",
-					"error"));
+			showFlashMessage("Error.", "error");
 		}
 		return Response.seeOther(URI.create("/admin/devices")).build();
 	}
 
 	@GET
 	@Path("/devices/{id}/update")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response updateDevice(@PathParam("id") String id) {
+	@Produces(MediaType.APPLICATION_XHTML_XML)
+	public Response updateDevice(@PathParam("id") String id,
+			@Context HttpServletRequest httpRequest) {
 		Map<String, Object> map = new HashMap<String, Object>();
 
 		PersistenceManager pm = jm.db.PMF.get().getPersistenceManager();
-		map.put("device",
-				pm.getObjectById(Device.class, KeyFactory.stringToKey(id)));
+		try {
+			map.put("device",
+					pm.getObjectById(Device.class, KeyFactory.stringToKey(id)));
+		} catch (Exception e) {
+			showFlashMessage("Error.", "error");
+		}
 		map.put("vendors", Vendor.getAll(pm));
 
 		return Response.ok(new Viewable("/views/device/update.jsp", map))
@@ -349,28 +406,41 @@ public class AdminRestService extends AppController {
 
 	@POST
 	@Path("/devices/{id}/update")
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_XHTML_XML)
 	public Response updateDeviceSave(@PathParam("id") String id,
 			@Context HttpServletRequest httpRequest,
 			@FormParam("name") String deviceName,
 			@FormParam("vendorId") String vendorId,
 			@FormParam("type") String type,
 			@FormParam("description") String description) {
-		HttpSession session = httpRequest.getSession(true);
-		Map<String, Object> map = new HashMap<String, Object>();
+		boolean valid = true;
 
 		PersistenceManager pm = jm.db.PMF.get().getPersistenceManager();
-		Device device = pm.getObjectById(Device.class,
-				KeyFactory.stringToKey(id));
 
-		device.setName(deviceName);
-		device.setType(type);
-		device.setDescription(description);
+		Device device = null;
+		try {
+			device = pm.getObjectById(Device.class, KeyFactory.stringToKey(id));
+		} catch (Exception e) {
+			showFlashMessage("Error.", "error");
+			valid = false;
+		}
 
-		pm.makePersistent(device);
+		if (valid) {
+			if (deviceName == null || deviceName.isEmpty()) {
+				showFlashMessage("Missing device name.", "error");
+			} else if (type == null || type.isEmpty()) {
+				showFlashMessage("Missing type.", "error");
+			} else if (description == null || description.isEmpty()) {
+				showFlashMessage("Missing description.", "error");
+			} else {
+				device.setName(deviceName);
+				device.setType(type);
+				device.setDescription(description);
+				pm.makePersistent(device);
+			}
+		}
 
-		session.setAttribute("flashMessage", new FlashMessage(
-				"Device sucessfully updated.", "success"));
+		showFlashMessage("Device sucessfully updated.", "success");
 
 		return Response.seeOther(URI.create("/admin/devices")).build();
 	}
@@ -383,33 +453,35 @@ public class AdminRestService extends AppController {
 			@FormParam("type") String type,
 			@FormParam("description") String description,
 			@Context HttpServletRequest httpRequest) throws URISyntaxException {
-		HttpSession session = httpRequest.getSession(true);
-		Map<String, Object> map = new HashMap<String, Object>();
 
 		PersistenceManager pm = jm.db.PMF.get().getPersistenceManager();
 
 		Device device = new Device();
-		device.setName(deviceName);
-		device.setDescription(description);
-		device.setType(type);
-		Key key = KeyFactory.stringToKey(vendorId);
-		Vendor vendor = pm.getObjectById(Vendor.class, key);
-		try {
-			if (device.getName() != null && !device.getName().isEmpty()) {
-				vendor.addDevice(device);
-				pm.makePersistent(vendor);
-				pm.makePersistent(device);
-				session.setAttribute("flashMessage", new FlashMessage(
-						"Driver was successfully added.", "success"));
-			} else {
-				session.setAttribute("flashMessage", new FlashMessage("Error.",
-						"error"));
+		if (deviceName == null || deviceName.isEmpty()) {
+			showFlashMessage("Missing device name.", "error");
+		} else if (type == null || type.isEmpty()) {
+			showFlashMessage("Missing type.", "error");
+		} else if (description == null || description.isEmpty()) {
+			showFlashMessage("Missing description.", "error");
+		} else {
+			device.setName(deviceName);
+			device.setDescription(description);
+			device.setType(type);
+			Key key = KeyFactory.stringToKey(vendorId);
+			Vendor vendor = pm.getObjectById(Vendor.class, key);
+			try {
+				if (device.getName() != null && !device.getName().isEmpty()) {
+					vendor.addDevice(device);
+					pm.makePersistent(vendor);
+					pm.makePersistent(device);
+					showFlashMessage("Device was successfully added.", "success");
+				} else {
+					showFlashMessage("Error.", "error");
+				}
+			} finally {
+				pm.close();
 			}
-		} finally {
-			pm.close();
 		}
-
-		beforeRender(map);
-		return Response.seeOther(new URI("/")).build();
+		return Response.seeOther(new URI("/admin/devices/")).build();
 	}
 }

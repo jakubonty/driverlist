@@ -33,7 +33,7 @@ public class AuthFilter implements ContainerRequestFilter {
 			request.setAttribute("admin", userService.isUserAdmin());
 		}
 		Response response = null;
-		response = Response.seeOther(URI.create("/front/index")).build();
+		response = Response.seeOther(URI.create("/")).build();
 		if ((containerRequest.getPath().startsWith("user/") || containerRequest.getPath().startsWith("admin/"))&& user == null) {
 			session.setAttribute("flashMessage", new FlashMessage(
 					"Please, log in first.", "error"));

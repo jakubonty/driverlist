@@ -18,7 +18,8 @@
         	<br/>
         	<textarea name="description">${it.device.description}</textarea>
         	<br/>
-            <input type="submit" name="submit" value="Send" />
+            <input class="btn btn-large btn-primary" type="submit"
+				name="submit" value="Update" />
         </form>
     </jsp:body>
 </t:page>

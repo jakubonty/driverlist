@@ -44,6 +44,7 @@ public class Vendor {
 	
 	public static List<Vendor> getAll(PersistenceManager pm) {
 		Query query = pm.newQuery(Vendor.class);
+		query.setOrdering("name");
 		List<Vendor> result = (List<Vendor>) query.execute();
 		return result;
 	}

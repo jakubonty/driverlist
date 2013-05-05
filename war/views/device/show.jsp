@@ -23,7 +23,8 @@
         	os = { "drivers": [
                 <c:forEach var="item" items="${it.device.drivers}">
     				{"name": "${item.name}", "os": "${item.operatingSystem}", 
-    				"data": "${item.data.keyString}", "version": "${item.version}"},           		           		           			         
+    				"data": "${item.data.keyString}", "version": "${item.version}",
+    				"author": "${item.authorEmail}"},           		           		           			         
     			</c:forEach>
     				]
         	};
@@ -32,7 +33,7 @@
 				$('#drivers').empty();				
             	for(dat in os.drivers) {
             		if (os.drivers[dat].os == selectedOs) {
-                		$('#drivers').append('<h4>'+os.drivers[dat].name+'</h4><p>Version: '+os.drivers[dat].version+'<br/><a href="/dl/front/driver/'+os.drivers[dat].data+'">Download .. </a></p>');
+                		$('#drivers').append('<h4>'+os.drivers[dat].name+'</h4><p>Author: '+os.drivers[dat].author+'<br />Version: '+os.drivers[dat].version+'<br/><a href="/dl/driver/'+os.drivers[dat].data+'">Download .. </a></p>');
             		}
             	}    		        	
         	};		     		

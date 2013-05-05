@@ -7,7 +7,8 @@
     	<h2>Update operating system</h2>
         <form class="form-general" method="POST">
         	<input type="text" name="name" placeholder="System name" value="${it.os.name}" />
-            <div><input type="submit" name="submit" value="Send"></div>
+            <div><input class="btn btn-large btn-primary" type="submit"
+				name="submit" value="Update" /></div>
         </form>
     </jsp:body>
 </t:page>

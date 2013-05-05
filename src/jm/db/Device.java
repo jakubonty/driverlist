@@ -13,10 +13,6 @@ import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
-import com.google.appengine.api.datastore.Query.Filter;
-import com.google.appengine.api.datastore.Query.FilterOperator;
-import com.google.appengine.api.datastore.Query.FilterPredicate;
 
 @PersistenceCapable
 public class Device {
@@ -41,6 +37,10 @@ public class Device {
     @Persistent(mappedBy = "device")
     private List<Driver> drivers;	
 	
+    public Device() {
+    	created = new Date();    	
+    }
+    
 	public String getDescription() {
 		return description;
 	}
@@ -98,6 +98,7 @@ public class Device {
 	
 	public static List<Device> getAll(PersistenceManager pm) {
 		Query query = pm.newQuery(Device.class);
+		query.setOrdering("name");
 		List<Device> result = (List<Device>) query.execute();
 		return result;
 	}
@@ -116,6 +117,7 @@ public class Device {
 	
 	public static List<Device> findBy(PersistenceManager pm, Key vendor, String type) {	
 		Query q = pm.newQuery(Device.class);
+		q.setOrdering("name");
 		q.setFilter("vendor == vendorParam && type == typeParam");
 		q.declareParameters(Vendor.class.getSimpleName() + " vendorParam, String typeParam");
 		List<Device> result = (List<Device>) q.execute(vendor, type);

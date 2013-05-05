@@ -87,7 +87,6 @@ body {
 						<li><a href="/dl/">Home</a></li>
 						<li><a href="/dl/">Find driver</a></li>
 						<li><a href="/dl/user/drivers/new">Add driver</a></li>
-						<li><a href="/dl/front/about">About</a></li>
 					</ul>
 					<p class="navbar-text pull-right">
 						<c:choose>
@@ -124,7 +123,6 @@ body {
 							<li class="nav-header">Menu</li>
 							<li><a href="/dl/">Find driver</a></li>
 							<li><a href="/dl/user/drivers/new">Add driver</a></li>
-							<li><a href="/dl/front/about">About</a></li>
 						</ul>
 					</div>
 					<c:if test="${admin}">
@@ -134,7 +132,7 @@ body {
 				</div>
 				<!--/span-->
 				<div class="span9">
-					<div class="row">
+					<div class="row" style="margin-left: 0px">
 						<jsp:doBody />
 
 					</div>

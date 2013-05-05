@@ -19,7 +19,7 @@ public class OperatingSystem {
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
 	private Key id;
 	@Persistent
-	private String name;
+	private String name;	
 	
 	public Key getId() {
 		return id;
@@ -40,6 +40,7 @@ public class OperatingSystem {
 	
 	public static List<OperatingSystem> getAll(PersistenceManager pm) {
 		Query query = pm.newQuery(OperatingSystem.class);
+		query.setOrdering("name");
 		List<OperatingSystem> result = (List<OperatingSystem>) query.execute();
 		return result;
 	}		
