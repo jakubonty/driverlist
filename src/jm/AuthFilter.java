@@ -1,14 +1,7 @@
 package jm;
 
-import java.net.URI;
-
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-
-import jm.common.FlashMessage;
 
 import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
@@ -22,7 +15,6 @@ public class AuthFilter implements ContainerRequestFilter {
 
 	@Override
 	public ContainerRequest filter(ContainerRequest containerRequest) {
-		HttpSession session = request.getSession(true);
 		UserService userService = UserServiceFactory.getUserService();
 		User user = userService.getCurrentUser();
 		request.setAttribute("user", user);
@@ -31,7 +23,10 @@ public class AuthFilter implements ContainerRequestFilter {
 		} else {
 			request.setAttribute("url", userService.createLogoutURL("/"));
 			request.setAttribute("admin", userService.isUserAdmin());
-		}
+		}		
+		containerRequest.setSecurityContext(new Authorizer(user, userService));
+		/*
+		HttpSession session = request.getSession(true);
 		Response response = null;
 		response = Response.seeOther(URI.create("/")).build();
 		if ((containerRequest.getPath().startsWith("user/") || containerRequest.getPath().startsWith("admin/"))&& user == null) {
@@ -42,7 +37,7 @@ public class AuthFilter implements ContainerRequestFilter {
 			session.setAttribute("flashMessage", new FlashMessage(
 					"You need admin permission to do this action.", "error"));
 			throw new WebApplicationException(response);			
-		}
+		}*/
 		return containerRequest;
 	}
 }

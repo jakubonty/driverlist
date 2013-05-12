@@ -86,7 +86,7 @@ body {
 					<ul class="nav">
 						<li><a href="/dl/">Home</a></li>
 						<li><a href="/dl/">Find driver</a></li>
-						<li><a href="/dl/user/drivers/new">Add driver</a></li>
+						<li><a href="/dl/drivers/new">Add driver</a></li>
 					</ul>
 					<p class="navbar-text pull-right">
 						<c:choose>
@@ -122,7 +122,7 @@ body {
 						<ul class="nav nav-list">
 							<li class="nav-header">Menu</li>
 							<li><a href="/dl/">Find driver</a></li>
-							<li><a href="/dl/user/drivers/new">Add driver</a></li>
+							<li><a href="/dl/drivers/new">Add driver</a></li>
 						</ul>
 					</div>
 					<c:if test="${admin}">

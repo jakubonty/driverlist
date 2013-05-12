@@ -9,7 +9,7 @@
 	BlobstoreService blobstoreService = BlobstoreServiceFactory
 			.getBlobstoreService();
 	String uploadUrl = blobstoreService
-			.createUploadUrl("/dl/user/drivers/new");
+			.createUploadUrl("/dl/drivers/new");
 	pageContext.setAttribute("uploadUrl", uploadUrl);
 %>
 

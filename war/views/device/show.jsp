@@ -33,7 +33,7 @@
 				$('#drivers').empty();				
             	for(dat in os.drivers) {
             		if (os.drivers[dat].os == selectedOs) {
-                		$('#drivers').append('<h4>'+os.drivers[dat].name+'</h4><p>Author: '+os.drivers[dat].author+'<br />Version: '+os.drivers[dat].version+'<br/><a href="/dl/driver/'+os.drivers[dat].data+'">Download .. </a></p>');
+                		$('#drivers').append('<h4>'+os.drivers[dat].name+'</h4><p>Author: '+os.drivers[dat].author+'<br />Version: '+os.drivers[dat].version+'<br/><a href="/dl/drivers/'+os.drivers[dat].data+'">Download .. </a></p>');
             		}
             	}    		        	
         	};		     		

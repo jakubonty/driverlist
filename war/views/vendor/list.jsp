@@ -10,11 +10,11 @@
         	<c:forEach var="item" items="${it.vendors}">
            		<h4>${item.name}</h4>
            		
-           			<a href="/dl/admin/vendors/${item.key}/delete">Delete</a> | 
-           			<a href="/dl/admin/vendors/${item.key}/update">Update</a>
+           			<a href="/dl/vendors/${item.key}/delete">Delete</a> | 
+           			<a href="/dl/vendors/${item.key}/update">Update</a>
         	</c:forEach>        	
     		</div>
-    		<a href="/dl/admin/vendors/new" class="btn btn-large btn-primary">Add vendor</a>
+    		<a href="/dl/vendors/new" class="btn btn-large btn-primary">Add vendor</a>
     	</div>    	
     </jsp:body>
 </t:page>

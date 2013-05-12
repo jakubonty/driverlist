@@ -43,6 +43,9 @@ public class Driver implements Serializable {
 	private String operatingSystem;
 	
 	@Persistent
+	private Key os;
+	
+	@Persistent
 	private BlobKey data;
 		
 	public Driver() {
@@ -136,6 +139,14 @@ public class Driver implements Serializable {
 		 return KeyFactory.keyToString(id);		
 	}	
 	
+	public Key getOs() {
+		return os;
+	}
+
+	public void setOs(Key os) {
+		this.os = os;
+	}
+
 	public static List<Driver> getAll(PersistenceManager pm) {
 		Query query = pm.newQuery(Driver.class);
 		query.setOrdering("name");

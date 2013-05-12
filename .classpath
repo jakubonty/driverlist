@@ -18,5 +18,7 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jsr311-api-1.1.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jta-1.1.jar"/>
 	<classpathentry kind="lib" path="/home/jakub/Downloads/jersey-bundle-1.8.jar"/>
+	<classpathentry kind="lib" path="/home/jakub/Downloads/jsr250-api-1.0.jar"/>
+	<classpathentry kind="lib" path="/home/jakub/Downloads/jersey-bundle-1.17.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

@@ -28,11 +28,11 @@
         	var updateDevices = function() {
         		var vendorId = $('#vendorId').val();
         		var type = $('#type').val();
-        		$.getJSON("/dl/search?vendorId="+vendorId+"&type="+type,
+        		$.getJSON("/dl/devices/search?vendorId="+vendorId+"&type="+type,
                     function(data) {
     			$('#devices').empty();
                 for(dat in data.devices) {                            	
-                    $('#devices').append('<a href="/dl/device/'+data.devices[dat].id+'"><h4>'+data.devices[dat].name+'</h4></a><p>'+data.devices[dat].description+'</p>');
+                    $('#devices').append('<a href="/dl/devices/'+data.devices[dat].id+'"><h4>'+data.devices[dat].name+'</h4></a><p>'+data.devices[dat].description+'</p>');
                 }                
             	});
         		};

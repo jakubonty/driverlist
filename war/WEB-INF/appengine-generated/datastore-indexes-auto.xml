@@ -1,11 +1,16 @@
-<!-- Indices written at Sun, 5 May 2013 23:27:37 CEST -->
+<!-- Indices written at Mon, 13 May 2013 00:57:55 CEST -->
 
 <datastore-indexes>
 
-    <!-- Used 1 time in query history -->
+    <!-- Used 5 times in query history -->
     <datastore-index kind="Device" ancestor="true" source="auto">
         <property name="type" direction="asc"/>
         <property name="name" direction="asc"/>
+    </datastore-index>
+
+    <!-- Used 3 times in query history -->
+    <datastore-index kind="Driver" ancestor="true" source="auto">
+        <property name="drivers_INTEGER_IDX" direction="asc"/>
     </datastore-index>
 
 </datastore-indexes>
